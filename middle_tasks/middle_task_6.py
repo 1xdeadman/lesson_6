@@ -12,7 +12,7 @@ class Database:
         self._second_queue = []
 
     def find_student_position(self, username: str) -> tuple[int, int, int]:
-        """ Ищет студента в никнеймом username  в очередях
+        """ Ищет студента с никнеймом username  в очередях
 
         :param username: имя искомого студента
         :return: Кортеж из трех значений [pos, priority_size, common_size]:
@@ -20,6 +20,8 @@ class Database:
             - priority_size: размер приоритетной очереди
             - common_size: размер обычной очереди
         """
+        if not isinstance(username, str):
+            raise TypeError
         user_index = -1
         max_count = max(len(self._first_queue), len(self._second_queue))
         for index in range(max_count):
@@ -41,6 +43,8 @@ class Database:
         :return: True - если студент был успешно добавлен
                  False - если студент не был добавлен
         """
+        if not isinstance(username, str) or not isinstance(displayed_username, str):
+            raise TypeError
         if Database.QUEUE_MAX_SIZE > len(self._first_queue) + len(self._second_queue):
             self._second_queue.append([username, displayed_username])
             return True
@@ -57,6 +61,8 @@ class Database:
         :return: True - если студент был успешно добавлен
                  False - если студент не был добавлен
         """
+        if not isinstance(username, str) or not isinstance(displayed_username, str):
+            raise TypeError
         if Database.QUEUE_MAX_SIZE > len(self._first_queue) + len(self._second_queue):
             self._first_queue.append([username, displayed_username])
             return True
@@ -80,6 +86,10 @@ def push_back(username: str, dis_username: str) -> tuple[Optional[bool], int]:
         2 - if 1 is None - return queue size
         2 - student's position
     """
+    if not isinstance(username, str) or not isinstance(dis_username, str):
+        raise TypeError
+    if username.startswith('_'):
+        raise ValueError
     pos, prior_count, count = db.find_student_position(username)
     if prior_count + count >= Database.QUEUE_MAX_SIZE:
         return None, prior_count + count
